@@ -1,0 +1,2 @@
+# OpenCVSharpWithWPF
+WPF上でOpenCVのAPI叩いて画像処理かけてみるやつ
