@@ -108,6 +108,7 @@
     <Compile Include="Source\Model\IModel.cs" />
     <Compile Include="Source\Model\Model.cs" />
     <Compile Include="Source\Model\WebCameraModel.cs" />
+    <Compile Include="Source\Utility\ImageProcessingUtility.cs" />
     <Compile Include="Source\ViewModel\WebCameraViewModel.cs" />
     <Compile Include="Source\ViewModel\ViewModel.cs" />
     <Compile Include="Source\View\MainWindow.xaml.cs">

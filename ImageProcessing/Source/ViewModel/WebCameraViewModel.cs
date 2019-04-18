@@ -25,18 +25,11 @@ namespace ImageProcessing.ViewModel
         public Command.ClickCommand BinarizationCommand { get; } = new Command.ClickCommand();
         public Command.ClickCommand GrayScaleCommand { get; } = new Command.ClickCommand();
 
-        public enum Mode
-        {
-            Default,
-            Binarization,
-            GrayScale,
-        }
         public Mode Current { get; private set; }
 
         public WebCameraViewModel()
         {
             model = new Model.WebCameraModel();
-
 
             DefaultCommand.OnClick.Subscribe(_ =>
             {
@@ -47,14 +40,14 @@ namespace ImageProcessing.ViewModel
             BinarizationCommand.OnClick.Subscribe(_ =>
             {
                 model.Reset();
-                Binarization(model.ImageMat, Threshold.Value);
+                Utility.ImageProcessingUtility.Binarization(model.ImageMat, Threshold.Value);
                 model.Apply();
                 Current = Mode.Binarization;
             });
             GrayScaleCommand.OnClick.Subscribe(_ =>
             {
                 model.Reset();
-                GrayScale(model.ImageMat);
+                Utility.ImageProcessingUtility.GrayScale(model.ImageMat);
                 model.Apply();
                 Current = Mode.GrayScale;
             });
@@ -78,10 +71,10 @@ namespace ImageProcessing.ViewModel
                             case Mode.Default:
                                 break;
                             case Mode.Binarization:
-                                Binarization(img, Threshold.Value);
+                                Utility.ImageProcessingUtility.Binarization(img, Threshold.Value);
                                 break;
                             case Mode.GrayScale:
-                                GrayScale(img);
+                                Utility.ImageProcessingUtility.GrayScale(img);
                                 break;
                             default:
                                 break;
@@ -91,45 +84,6 @@ namespace ImageProcessing.ViewModel
                     }
                 }
             });
-        }
-
-        private void GrayScale(Mat mat)
-        {
-            var mat3 = new MatOfByte3(model.ImageMat);
-            var indexer = mat3.GetIndexer();
-
-            for (int y = 0; y < model.ImageMat.Height; y++)
-            {
-                for (int x = 0; x < model.ImageMat.Width; x++)
-                {
-                    Vec3b color = indexer[y, x];
-                    var sum = color.Item0 + color.Item1 + color.Item2;
-                    color.Item0 = (byte)(sum / 3);
-                    color.Item1 = (byte)(sum / 3);
-                    color.Item2 = (byte)(sum / 3);
-                    indexer[y, x] = color;
-                }
-            }
-        }
-
-        private void Binarization(Mat mat, float threshold)
-        {
-            var mat3 = new MatOfByte3(model.ImageMat);
-            var indexer = mat3.GetIndexer();
-
-            var bthreshold = threshold * byte.MaxValue;
-            for (int y = 0; y < model.ImageMat.Height; y++)
-            {
-                for (int x = 0; x < model.ImageMat.Width; x++)
-                {
-                    Vec3b color = indexer[y, x];
-                    var sum = color.Item0 + color.Item1 + color.Item2;
-                    color.Item0 = (byte)(sum / 3) <= bthreshold ? byte.MinValue : byte.MaxValue;
-                    color.Item1 = (byte)(sum / 3) <= bthreshold ? byte.MinValue : byte.MaxValue;
-                    color.Item2 = (byte)(sum / 3) <= bthreshold ? byte.MinValue : byte.MaxValue;
-                    indexer[y, x] = color;
-                }
-            }
         }
     }
 }
