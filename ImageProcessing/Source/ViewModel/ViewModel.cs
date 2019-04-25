@@ -23,6 +23,8 @@ namespace ImageProcessing.ViewModel
         public Command.ClickCommand DefaultCommand { get; } = new Command.ClickCommand();
         public Command.ClickCommand BinarizationCommand { get; } = new Command.ClickCommand();
         public Command.ClickCommand GrayScaleCommand { get; } = new Command.ClickCommand();
+        public Command.ClickCommand EdgeDetectCommand { get; } = new Command.ClickCommand();
+
         public Mode Current { get; private set; }
 
         public ViewModel()
@@ -48,6 +50,14 @@ namespace ImageProcessing.ViewModel
                 Utility.ImageProcessingUtility.GrayScale(model.ImageMat);
                 model.Apply();
                 Current = Mode.GrayScale;
+            });
+            EdgeDetectCommand.OnClick.Subscribe(_ =>
+            {
+                model.Reset();
+                Utility.ImageProcessingUtility.Canny(model.ImageMat, out var result);
+                model.ImageMat = result;
+                model.Apply();
+                Current = Mode.EdgeDetect;
             });
 
             Threshold.Subscribe(n =>

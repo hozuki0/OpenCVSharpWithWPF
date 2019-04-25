@@ -24,6 +24,7 @@ namespace ImageProcessing.ViewModel
         public Command.ClickCommand DefaultCommand { get; } = new Command.ClickCommand();
         public Command.ClickCommand BinarizationCommand { get; } = new Command.ClickCommand();
         public Command.ClickCommand GrayScaleCommand { get; } = new Command.ClickCommand();
+        public Command.ClickCommand EdgeDetectCommand { get; } = new Command.ClickCommand();
 
         public Mode Current { get; private set; }
 
@@ -51,7 +52,14 @@ namespace ImageProcessing.ViewModel
                 model.Apply();
                 Current = Mode.GrayScale;
             });
-
+            EdgeDetectCommand.OnClick.Subscribe(_ =>
+            {
+                model.Reset();
+                Utility.ImageProcessingUtility.Canny(model.ImageMat, out var result);
+                model.ImageMat = result;
+                model.Apply();
+                Current = Mode.EdgeDetect;
+            });
             var camera = new VideoCapture(0)
             {
                 FrameWidth = 500,
@@ -69,18 +77,27 @@ namespace ImageProcessing.ViewModel
                         switch (Current)
                         {
                             case Mode.Default:
+                                model.ImageMat = img.Flip(FlipMode.Y);
+                                model.Apply();
                                 break;
                             case Mode.Binarization:
                                 Utility.ImageProcessingUtility.Binarization(img, Threshold.Value);
+                                model.ImageMat = img.Flip(FlipMode.Y);
+                                model.Apply();
                                 break;
                             case Mode.GrayScale:
                                 Utility.ImageProcessingUtility.GrayScale(img);
+                                model.ImageMat = img.Flip(FlipMode.Y);
+                                model.Apply();
+                                break;
+                            case Mode.EdgeDetect:
+                                Utility.ImageProcessingUtility.Canny(img, out var result);
+                                model.ImageMat = result.Flip(FlipMode.Y);
+                                model.Apply();
                                 break;
                             default:
                                 break;
                         }
-                        model.ImageMat = img.Flip(FlipMode.Y);
-                        model.Apply();
                     }
                 }
             });

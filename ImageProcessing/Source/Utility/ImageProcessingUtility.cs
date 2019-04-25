@@ -47,5 +47,13 @@ namespace ImageProcessing.Utility
                 }
             }
         }
+
+        public static void Canny(Mat mat, out Mat result)
+        {
+            result = new Mat();
+            mat.CopyTo(result);
+            GrayScale(result);
+            result = result.Canny(100, 200);
+        }
     }
 }

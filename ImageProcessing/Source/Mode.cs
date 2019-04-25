@@ -11,5 +11,6 @@ namespace ImageProcessing
         Default,
         Binarization,
         GrayScale,
+        EdgeDetect,
     }
 }

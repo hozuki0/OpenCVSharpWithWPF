@@ -20,6 +20,7 @@
                 <Button Content="2値化" Width="{StaticResource ButtonRect}" Command="{Binding BinarizationCommand}"/>
                 <Slider Value="{Binding Threshold.Value}" Minimum="0.0" Maximum="1.0"/>
                 <Button Content="グレースケール"  Width="{StaticResource ButtonRect}" Command="{Binding GrayScaleCommand}"/>
+                <Button Content="エッジ検出"  Width="{StaticResource ButtonRect}" Command="{Binding EdgeDetectCommand}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
